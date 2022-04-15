@@ -17,7 +17,7 @@ public class CensusAnalyzerTest {
     private String INDIAN_STATE_CODE_CSV_FILE_WRONG_PATH = "C:\\Users\\DEEPAK REDDY\\Desktop\\IndiaCensus_Analyzer\\src\\resources\\IndiaStateCode.csv ";
     private String INDIAN_STATE_CODE_WRONGFILE_TYPE="C:\\Users\\DEEPAK REDDY\\Desktop\\Java_Bridgelabz\\IndiaCensus_Analyzer\\src\\main\\resources\\IndiaStateCode.txt";
     private String INDIAN_STATE_CODE_WRONG_DELIMETER="C:\\Users\\DEEPAK REDDY\\Desktop\\Java_Bridgelabz\\IndiaCensus_Analyzer\\src\\main\\resources\\IndiaStateCodeWithWrongDelimeter.csv ";
-
+    private String INDIAN_STATE_CODE_WRONG_HEADER="C:\\Users\\DEEPAK REDDY\\Desktop\\Java_Bridgelabz\\IndiaCensus_Analyzer\\src\\main\\resources\\IndiaStateCodeWithWrongHeader.csv";
     CensusAnalyzer censusAnalyzer = new CensusAnalyzer();
 
     @Test
@@ -111,5 +111,15 @@ public class CensusAnalyzerTest {
             e.printStackTrace();
         }
     }
+    @Test
+    public void givenIndianStateCode_WrongHeader_WhenLoad_ShouldReturnException() {
+        try {
+            censusAnalyzer.loadIndianStateCodeData(INDIAN_STATE_CODE_WRONG_HEADER);
+        } catch (CensusAnalyzerException e) {
+            Assert.assertEquals(e.getMessage(), CensusAnalyzerException.ExceptionType.INCORRECT_HEADER);
+            e.printStackTrace();
+        }
+    }
 }
+
 
