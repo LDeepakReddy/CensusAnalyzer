@@ -2,7 +2,10 @@ package com.blz.indiacensusanalyzer;
 
 public class CensusAnalyzerException extends Exception {
     public enum ExceptionType {
-        CENSUS_FILE_PROBLEM
+        CENSUS_FILE_PROBLEM,
+        INCORRECT_FILE_TYPE,
+        INCORRECT_DELIMETER_HEADER,
+        STATE_CODE_FILE_PROBLEM
     }
 
     public ExceptionType exceptionType;
@@ -12,6 +15,5 @@ public class CensusAnalyzerException extends Exception {
         this.exceptionType = exceptionType;
         this.message = message;
     }
-
 
 }
