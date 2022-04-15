@@ -108,6 +108,7 @@ public class CensusAnalyzerTest {
             censusAnalyzer.loadIndianStateCodeData(INDIAN_STATE_CODE_WRONG_DELIMETER);
         } catch (CensusAnalyzerException e) {
             Assert.assertEquals(e.getMessage(), CensusAnalyzerException.ExceptionType.INCORRECT_DELIMETER);
+            e.printStackTrace();
         }
     }
 }
