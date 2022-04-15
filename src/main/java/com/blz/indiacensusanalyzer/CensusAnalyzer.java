@@ -50,7 +50,6 @@ public class CensusAnalyzer {
             Reader reader = Files.newBufferedReader(Paths.get(csvFilePath));
             CsvToBean<StateCodesCSV> csvToBean = new CsvToBeanBuilder<StateCodesCSV>(reader)
                     .withType(StateCodesCSV.class)
-                    .withIgnoreLeadingWhiteSpace(true)
                     .build();
             Iterator<StateCodesCSV> iterator = csvToBean.iterator();
             Iterable<StateCodesCSV> csvIterable = () -> iterator;
