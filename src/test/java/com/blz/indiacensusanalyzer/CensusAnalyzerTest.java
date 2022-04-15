@@ -15,6 +15,9 @@ public class CensusAnalyzerTest {
 
     private String INDIAN_STATE_CODE_CSV_FILE_PATH = "C:\\Users\\DEEPAK REDDY\\Desktop\\Java_Bridgelabz\\IndiaCensus_Analyzer\\src\\main\\resources\\IndiaStateCode.csv";
     private String INDIAN_STATE_CODE_CSV_FILE_WRONG_PATH = "C:\\Users\\DEEPAK REDDY\\Desktop\\IndiaCensus_Analyzer\\src\\resources\\IndiaStateCode.csv ";
+    private String INDIAN_STATE_CODE_WRONGFILE_TYPE="C:\\Users\\DEEPAK REDDY\\Desktop\\Java_Bridgelabz\\IndiaCensus_Analyzer\\src\\main\\resources\\IndiaStateCode.txt";
+    private String INDIAN_STATE_CODE_WRONG_DELIMETER="C:\\Users\\DEEPAK REDDY\\Desktop\\Java_Bridgelabz\\IndiaCensus_Analyzer\\src\\main\\resources\\IndiaStateCodeWithWrongDelimeter.csv ";
+
     CensusAnalyzer censusAnalyzer = new CensusAnalyzer();
 
     @Test
@@ -82,12 +85,29 @@ public class CensusAnalyzerTest {
     }
 
     @Test
-    public void givenIndianStateCode_WrongCSVFile_WhenLoad_ShouldReturnException() throws CensusAnalyzerException {
+    public void givenIndianStateCode_WrongCSVFile_WhenLoad_ShouldReturnException() {
         try {
             censusAnalyzer.loadIndianStateCodeData(INDIAN_STATE_CODE_CSV_FILE_WRONG_PATH);
         } catch (CensusAnalyzerException e) {
             Assert.assertEquals(e.getMessage(), CensusAnalyzerException.ExceptionType.STATE_CODE_FILE_PROBLEM);
             e.printStackTrace();
+        }
+    }
+    @Test
+    public void givenIndianStateCode_WrongCSVFileFormat_WhenLoad_ShouldReturnException() {
+        try {
+            censusAnalyzer.loadIndianStateCodeData(INDIAN_STATE_CODE_WRONGFILE_TYPE);
+        } catch (CensusAnalyzerException e) {
+            Assert.assertEquals(e.getMessage(), CensusAnalyzerException.ExceptionType.INCORRECT_FILE_TYPE);
+            e.printStackTrace();
+        }
+    }
+    @Test
+    public void givenIndianStateCode_WrongDelimeter_WhenLoad_ShouldReturnException() {
+        try {
+            censusAnalyzer.loadIndianStateCodeData(INDIAN_STATE_CODE_WRONG_DELIMETER);
+        } catch (CensusAnalyzerException e) {
+            Assert.assertEquals(e.getMessage(), CensusAnalyzerException.ExceptionType.INCORRECT_DELIMETER);
         }
     }
 }
