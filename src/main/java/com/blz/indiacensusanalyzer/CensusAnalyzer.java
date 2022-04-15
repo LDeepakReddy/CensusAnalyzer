@@ -42,28 +42,25 @@ public class CensusAnalyzer {
 
     }
 
-    public int loadStateCodeData(String csvPath) throws CensusAnalyzerException {
-        try (Reader reader = Files.newBufferedReader(Paths.get(csvPath))) {
-            Iterator<StateCodesCSV> censusCSVIterator = new OpenCSV().getCSVIterator(reader, StateCodesCSV.class);
-            Iterable<StateCodesCSV> csvIterator = () -> censusCSVIterator;
-            return this.getCount(csvIterator);
-
-        } catch (NoSuchFileException e) {
-            if (!csvPath.contains(".csv")) {
-                throw new CensusAnalyzerException(e.getMessage(), CensusAnalyzerException.ExceptionType.INCORRECT_FILE_TYPE);
+    public int loadIndianStateCodeData(String csvFilePath) throws CensusAnalyzerException {
+        try {
+            if (csvFilePath.contains("txt")) {
+                throw new CensusAnalyzerException("File must be in CSV Format", CensusAnalyzerException.ExceptionType.INCORRECT_FILE_TYPE);
             }
-        } catch (IOException e) {
-            throw new CensusAnalyzerException(e.getMessage(), CensusAnalyzerException.ExceptionType.STATE_CODE_FILE_PROBLEM);
-
+            Reader reader = Files.newBufferedReader(Paths.get(csvFilePath));
+            CsvToBean<StateCodesCSV> csvToBean = new CsvToBeanBuilder<StateCodesCSV>(reader)
+                    .withType(StateCodesCSV.class)
+                    .withIgnoreLeadingWhiteSpace(true)
+                    .build();
+            Iterator<StateCodesCSV> iterator = csvToBean.iterator();
+            Iterable<StateCodesCSV> csvIterable = () -> iterator;
+            int count = (int) StreamSupport.stream(csvIterable.spliterator(), true).count();
+            return count;
         } catch (RuntimeException e) {
-            throw new CensusAnalyzerException(e.getMessage(), CensusAnalyzerException.ExceptionType.INCORRECT_DELIMETER);
+            throw new CensusAnalyzerException("CSV File Must Have Comma As Delimiter", CensusAnalyzerException.ExceptionType.INCORRECT_DELIMETER);
+        } catch (IOException e) {
+            throw new CensusAnalyzerException(e.getMessage(), CensusAnalyzerException.ExceptionType.INCORRECT_HEADER);
         }
-        return 0;
     }
 
-    private <E> int getCount(Iterable<E> csvIterator) {
-        return (int) StreamSupport.stream(csvIterator.spliterator(), true)
-                .count();
-
-    }
 }

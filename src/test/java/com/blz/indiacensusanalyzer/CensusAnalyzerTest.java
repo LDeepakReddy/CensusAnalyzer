@@ -11,7 +11,7 @@ public class CensusAnalyzerTest {
     private static final String INDIAN_CENSUS_WITHWRONG_DELIMITER = "C:\\Users\\DEEPAK REDDY\\Desktop\\Java_Bridgelabz\\IndiaCensus_Analyzer\\src\\main\\resources\\IndiaStateCensusDataWithWrongDelimeter.csv";
     private static final String INDIAN_CENSUS_WITHWRONG_HEADER = "C:\\Users\\DEEPAK REDDY\\Desktop\\Java_Bridgelabz\\IndiaCensus_Analyzer\\src\\main\\resources\\IndiaStateCensusDataWrongHeader.csv";
 
-    private String INIDAN_STATE_CODE_CSV_FILE_PATH = "C:\\Users\\DEEPAK REDDY\\Desktop\\Java_Bridgelabz\\IndiaCensus_Analyzer\\src\\main\\resources\\IndiaStateCode.csv";
+    private String INDIAN_STATE_CODE_CSV_FILE_PATH = "C:\\Users\\DEEPAK REDDY\\Desktop\\Java_Bridgelabz\\IndiaCensus_Analyzer\\src\\main\\resources\\IndiaStateCode.csv";
 
     CensusAnalyzer censusAnalyzer = new CensusAnalyzer();
 
@@ -74,7 +74,7 @@ public class CensusAnalyzerTest {
 
     @Test
     public void givenIndianStateCodeCSVFile_WhenLoad_ShouldReturnCorrectRecords() throws CensusAnalyzerException {
-        int count = censusAnalyzer.loadStateCodeData(INIDAN_STATE_CODE_CSV_FILE_PATH);
+        int count = censusAnalyzer.loadIndianStateCodeData(INDIAN_STATE_CODE_CSV_FILE_PATH);
         Assert.assertEquals(37, count);
 
     }
