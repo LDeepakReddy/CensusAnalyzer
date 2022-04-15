@@ -8,6 +8,7 @@ import java.io.Reader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Iterator;
+import java.util.stream.StreamSupport;
 
 public class CensusAnalyzer {
     public int loadIndiaCensusData(String csvPath) throws CensusAnalyzerException {
@@ -35,4 +36,26 @@ public class CensusAnalyzer {
 
         }
     }
+
+    public int loadIndianStateCodeData(String csvFilePath) throws CensusAnalyzerException {
+        try {
+            if (csvFilePath.contains("txt")) {
+                throw new CensusAnalyzerException("File must be in CSV Format", CensusAnalyzerException.ExceptionType.INCORRECT_FILE_TYPE);
+            }
+            Reader reader = Files.newBufferedReader(Paths.get(csvFilePath));
+            CsvToBean<StateCodesCSV> csvToBean = new CsvToBeanBuilder<StateCodesCSV>(reader)
+                    .withType(StateCodesCSV.class)
+                    .withIgnoreLeadingWhiteSpace(true)
+                    .build();
+            Iterator<StateCodesCSV> iterator = csvToBean.iterator();
+            Iterable<StateCodesCSV> csvIterable = () -> iterator;
+            int count = (int) StreamSupport.stream(csvIterable.spliterator(), true).count();
+            return count;
+        } catch (RuntimeException e) {
+            throw new CensusAnalyzerException("CSV File Must Have Comma As Delimiter", CensusAnalyzerException.ExceptionType.INCORRECT_DELIMETER);
+        } catch (IOException e) {
+            throw new CensusAnalyzerException(e.getMessage(), CensusAnalyzerException.ExceptionType.INCORRECT_HEADER);
+        }
+    }
 }
+
