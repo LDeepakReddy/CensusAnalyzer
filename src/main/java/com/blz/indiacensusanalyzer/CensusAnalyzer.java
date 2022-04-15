@@ -6,11 +6,15 @@ import com.opencsv.bean.CsvToBeanBuilder;
 import java.io.IOException;
 import java.io.Reader;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Paths;
 import java.util.Iterator;
 import java.util.stream.StreamSupport;
 
+
 public class CensusAnalyzer {
+    static int numOfEntries = 0;
+
     public int loadIndiaCensusData(String csvPath) throws CensusAnalyzerException {
         try {
             Reader reader = Files.newBufferedReader(Paths.get(csvPath));
@@ -18,7 +22,7 @@ public class CensusAnalyzer {
                     .withType(IndiaCensusCSV.class)
                     .build();
             Iterator<IndiaCensusCSV> censusCSVIterator = csvToBean.iterator();
-            int numOfEntries = 0;
+
             while (censusCSVIterator.hasNext()) {
                 numOfEntries++;
                 censusCSVIterator.next();
@@ -35,27 +39,31 @@ public class CensusAnalyzer {
 
 
         }
+
     }
 
-    public int loadIndianStateCodeData(String csvFilePath) throws CensusAnalyzerException {
-        try {
-            if (csvFilePath.contains("txt")) {
-                throw new CensusAnalyzerException("File must be in CSV Format", CensusAnalyzerException.ExceptionType.INCORRECT_FILE_TYPE);
+    public int loadStateCodeData(String csvPath) throws CensusAnalyzerException {
+        try (Reader reader = Files.newBufferedReader(Paths.get(csvPath))) {
+            Iterator<StateCodesCSV> censusCSVIterator = new OpenCSV().getCSVIterator(reader, StateCodesCSV.class);
+            Iterable<StateCodesCSV> csvIterator = () -> censusCSVIterator;
+            return this.getCount(csvIterator);
+
+        } catch (NoSuchFileException e) {
+            if (!csvPath.contains(".csv")) {
+                throw new CensusAnalyzerException(e.getMessage(), CensusAnalyzerException.ExceptionType.INCORRECT_FILE_TYPE);
             }
-            Reader reader = Files.newBufferedReader(Paths.get(csvFilePath));
-            CsvToBean<StateCodesCSV> csvToBean = new CsvToBeanBuilder<StateCodesCSV>(reader)
-                    .withType(StateCodesCSV.class)
-                    .withIgnoreLeadingWhiteSpace(true)
-                    .build();
-            Iterator<StateCodesCSV> iterator = csvToBean.iterator();
-            Iterable<StateCodesCSV> csvIterable = () -> iterator;
-            int count = (int) StreamSupport.stream(csvIterable.spliterator(), true).count();
-            return count;
-        } catch (RuntimeException e) {
-            throw new CensusAnalyzerException("CSV File Must Have Comma As Delimiter", CensusAnalyzerException.ExceptionType.INCORRECT_DELIMETER);
         } catch (IOException e) {
-            throw new CensusAnalyzerException(e.getMessage(), CensusAnalyzerException.ExceptionType.INCORRECT_HEADER);
+            throw new CensusAnalyzerException(e.getMessage(), CensusAnalyzerException.ExceptionType.STATE_CODE_FILE_PROBLEM);
+
+        } catch (RuntimeException e) {
+            throw new CensusAnalyzerException(e.getMessage(), CensusAnalyzerException.ExceptionType.INCORRECT_DELIMETER);
         }
+        return 0;
+    }
+
+    private <E> int getCount(Iterable<E> csvIterator) {
+        return (int) StreamSupport.stream(csvIterator.spliterator(), true)
+                .count();
+
     }
 }
-
