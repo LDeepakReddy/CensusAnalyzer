@@ -4,7 +4,8 @@ public class CensusAnalyzerException extends Exception {
     public enum ExceptionType {
         CENSUS_FILE_PROBLEM,
         INCORRECT_FILE_TYPE,
-        INCORRECT_DELIMETER_HEADER,
+        INCORRECT_DELIMETER,
+        INCORRECT_HEADER,
         STATE_CODE_FILE_PROBLEM
     }
 
